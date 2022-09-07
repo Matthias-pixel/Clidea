@@ -1,21 +1,29 @@
 package de.ideaonic703.clidea;
 
+import de.ideaonic703.clidea.module.LOBotBypassModule;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtIo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 
-public class Clidea implements ModInitializer {
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
-	public static final Logger LOGGER = LoggerFactory.getLogger("modid");
-
+public class Clidea implements ClientModInitializer {
+	public static final Logger LOGGER = LoggerFactory.getLogger("clidea");
+	public static final Path CONFIG_DIRECTORY = FabricLoader.getInstance().getConfigDir().resolve("Clidea");
+	public static final File CONFIG_FILE = CONFIG_DIRECTORY.resolve("clidea.conf").toFile();
 	@Override
-	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
-
-		LOGGER.info("Hello Fabric world!");
+	public void onInitializeClient() {
+		try {
+			CONFIG_DIRECTORY.toFile().mkdirs();
+			if(CONFIG_FILE.createNewFile()) {
+				NbtIo.write(new NbtCompound(), CONFIG_FILE);
+			}
+		} catch (IOException ignored) {}
+		ClideaModules.getInstance().registerModule(LOBotBypassModule.getInstance());
 	}
 }

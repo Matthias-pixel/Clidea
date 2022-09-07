@@ -4,11 +4,12 @@
   "package": "de.ideaonic703.clidea.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "ConnectionMixin",
-    "MovementMixin"
+    "module.LOBotBypass.ConnectionMixin",
+    "module.LOBotBypass.MovementMixin",
+    "gui.OptionsScreenAccessor",
+    "gui.OptionsScreenMixin"
   ],
   "server": [
-    "LoggingMixin"
   ],
   "injectors": {
     "defaultRequire": 1
