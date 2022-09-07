@@ -1,29 +1,28 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "clidea",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Idea Client",
+  "description": "\"Utility\" Mod for Minecraft",
   "authors": [
-    "Me!"
+    "Ideaonic703"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/Matthias-Pixel/Clidea"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "MIT",
+  "icon": "assets/clidea/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "de.ideaonic703.clidea.Clidea"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "clidea.mixins.json"
   ],
 
   "depends": {
@@ -33,6 +32,6 @@
     "java": ">=17"
   },
   "suggests": {
-    "another-mod": "*"
+    "another-mod": "SoundCraft*"
   }
 }
