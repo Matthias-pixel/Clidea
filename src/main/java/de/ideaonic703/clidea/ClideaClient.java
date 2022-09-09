@@ -19,7 +19,7 @@ public class ClideaClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		try {
-			if(CONFIG_DIRECTORY.toFile().mkdirs()) {
+			if(CONFIG_DIRECTORY.toFile().isDirectory() || CONFIG_DIRECTORY.toFile().mkdirs()) {
 				if (CONFIG_FILE.createNewFile()) {
 					NbtIo.write(new NbtCompound(), CONFIG_FILE);
 				}
