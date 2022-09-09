@@ -2,16 +2,26 @@ package de.ideaonic703.clidea.module;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketCallbacks;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+import javax.swing.text.Style;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @Environment(EnvType.CLIENT)
-public class LOBotBypassModule implements ClideaModule {
-    private static final String ID = "LOBotBypassModule";
-    private static LOBotBypassModule instance;
-    public static LOBotBypassModule getInstance() {
+public class PacketLoggerModule implements ClideaModule {
+    private static final String ID = "PacketLoggerModule";
+    private static PacketLoggerModule instance;
+    public static PacketLoggerModule getInstance() {
         if(instance == null)
-            instance = new LOBotBypassModule();
+            instance = new PacketLoggerModule();
         return instance;
     }
     private static final NbtCompound DEFAULT_CONFIG;
@@ -21,23 +31,24 @@ public class LOBotBypassModule implements ClideaModule {
         enabled.putString("name", "Enabled");
         enabled.putBoolean("toggle", false);
         DEFAULT_CONFIG.put("enabled", enabled);
-        NbtCompound block_vehicle_packets = new NbtCompound();
-        block_vehicle_packets.putString("name", "Disable Vehicles");
-        block_vehicle_packets.putBoolean("toggle", false);
-        DEFAULT_CONFIG.put("block_vehicle_packets", block_vehicle_packets);
-        NbtCompound round_vehicle_packets = new NbtCompound();
-        round_vehicle_packets.putString("name", "Apply Bypass to vehicles");
-        round_vehicle_packets.putBoolean("toggle", false);
-        DEFAULT_CONFIG.put("round_vehicle_packets", round_vehicle_packets);
-        NbtCompound rounding = new NbtCompound();
-        rounding.putString("name", "Rounding precision");
-        rounding.putInt("slider_start", 50);
-        rounding.putInt("slider", 100);
-        rounding.putInt("slider_end", 150);
-        DEFAULT_CONFIG.put("rounding", rounding);
+        NbtCompound outgoing = new NbtCompound();
+        outgoing.putString("name", "Log outgoing Packets C2S");
+        outgoing.putBoolean("toggle", true);
+        DEFAULT_CONFIG.put("outgoing", outgoing);
+        NbtCompound incoming = new NbtCompound();
+        incoming.putString("name", "Log incoming Packets S2C");
+        incoming.putBoolean("toggle", false);
+        DEFAULT_CONFIG.put("incoming", incoming);
     }
-    private LOBotBypassModule() {}
     private final NbtCompound config = DEFAULT_CONFIG;
+    private PacketLoggerModule() {}
+
+    public boolean outgoingPacket(Packet<?> packet, PacketCallbacks callbacks) {
+        Text message = Text.literal(String.format("[Server Logger] %s", packet.getClass().getSimpleName())).formatted(Formatting.LIGHT_PURPLE);
+        MinecraftClient.getInstance().getMessageHandler().onGameMessage(message, false);
+        return false;
+    }
+
     @Override
     public String getId() {
         return ID;
@@ -55,12 +66,10 @@ public class LOBotBypassModule implements ClideaModule {
     public NbtCompound getConfig() {
         return this.config;
     }
-
     @Override
     public Text getName() {
-        return Text.literal("LO Bot Bypass");
+        return Text.literal("Packet Logger");
     }
-
     @Override
     public boolean changeSetting(String id, boolean toggle) {
         NbtCompound setting = (NbtCompound) this.config.get(id);
@@ -81,22 +90,14 @@ public class LOBotBypassModule implements ClideaModule {
         assert setting != null;
         return setting.getBoolean("toggle");
     }
-    public boolean isVehicleBlocked() {
-        NbtCompound setting = (NbtCompound) this.config.get("block_vehicle_packets");
+    public boolean shouldLogC2S() {
+        NbtCompound setting = (NbtCompound) this.config.get("outgoing");
         assert setting != null;
         return setting.getBoolean("toggle");
     }
-    public boolean isVehicleRounded() {
-        NbtCompound setting = (NbtCompound) this.config.get("round_vehicle_packets");
+    public boolean shouldLogS2C() {
+        NbtCompound setting = (NbtCompound) this.config.get("incoming");
         assert setting != null;
         return setting.getBoolean("toggle");
-    }
-    public double getRounding() {
-        NbtCompound setting = (NbtCompound) this.config.get("rounding");
-        assert setting != null;
-        return setting.getInt("slider");
-    }
-    public double round(double a) {
-        return ((int) (a * this.getRounding())) / this.getRounding();
     }
 }

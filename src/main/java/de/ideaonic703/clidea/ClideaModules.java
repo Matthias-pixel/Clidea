@@ -2,11 +2,9 @@ package de.ideaonic703.clidea;
 
 import de.ideaonic703.clidea.gui.screen.ModuleConfigScreen;
 import de.ideaonic703.clidea.module.ClideaModule;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtIo;
 
 import java.io.IOException;
@@ -26,7 +24,7 @@ public class ClideaModules {
     private ClideaModules() {
         this.modules = new HashMap<>();
         try {
-            config = NbtIo.read(Clidea.CONFIG_FILE);
+            config = NbtIo.read(ClideaClient.CONFIG_FILE);
         } catch (IOException e) {
             config = new NbtCompound();
         }
@@ -44,9 +42,9 @@ public class ClideaModules {
             this.config.put(module.getId(), module.getConfig());
         }
         try {
-            NbtIo.write(this.config, Clidea.CONFIG_FILE);
+            NbtIo.write(this.config, ClideaClient.CONFIG_FILE);
         } catch (IOException e) {
-            Clidea.LOGGER.error("Couldn't save config changes!");
+            ClideaClient.LOGGER.error("Couldn't save config changes!");
         }
     }
     public ClideaModule getModule(String id) {

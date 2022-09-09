@@ -18,7 +18,7 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "de.ideaonic703.clidea.Clidea"
+      "de.ideaonic703.clidea.ClideaClient"
     ]
   },
   "mixins": [
