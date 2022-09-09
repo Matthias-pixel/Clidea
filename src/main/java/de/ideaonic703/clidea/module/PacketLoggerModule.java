@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.listener.PacketListener;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -44,7 +45,12 @@ public class PacketLoggerModule implements ClideaModule {
     private PacketLoggerModule() {}
 
     public boolean outgoingPacket(Packet<?> packet, PacketCallbacks callbacks) {
-        Text message = Text.literal(String.format("[Server Logger] %s", packet.getClass().getSimpleName())).formatted(Formatting.LIGHT_PURPLE);
+        Text message = Text.literal(String.format("[Server Logger C->] %s", packet.getClass().getSimpleName())).formatted(Formatting.LIGHT_PURPLE);
+        MinecraftClient.getInstance().getMessageHandler().onGameMessage(message, false);
+        return false;
+    }
+    public <T extends PacketListener> boolean incomingPacket(Packet<T> packet, PacketListener listener) {
+        Text message = Text.literal(String.format("[Server Logger S->] %s", packet.getClass().getSimpleName())).formatted(Formatting.DARK_AQUA);
         MinecraftClient.getInstance().getMessageHandler().onGameMessage(message, false);
         return false;
     }
